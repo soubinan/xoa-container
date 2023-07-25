@@ -25,9 +25,8 @@ FROM node:lts-slim
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y build-essential python3-minimal libvhdi-utils lvm2 nfs-common cifs-utils ntfs-3g netbase \
     qemu-utils python3-vmdkstream git libxml2-utils libfuse2 nbdkit libcap2-bin curl libpng-dev gnupg \
-    software-properties-common dmidecode apt-transport-https ca-certificates tzdata
-
-RUN apt-get autoclean
+    software-properties-common dmidecode apt-transport-https ca-certificates tzdata && \
+    apt-get autoclean
 
 COPY --from=build /build/xen-orchestra /app
 
