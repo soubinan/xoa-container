@@ -1,0 +1,10 @@
+datadir = '/var/lib/xo-server/data'
+
+[http]
+redirectToHttps = false
+
+[[http.listen]]
+port = 8080
+
+[redis]
+uri = 'redis://redis_db:6379/0'

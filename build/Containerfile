@@ -1,0 +1,58 @@
+# build stage
+FROM node:lts as build
+
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y git software-properties-common build-essential apt-transport-https ca-certificates
+
+WORKDIR /build
+
+RUN git clone -b master https://github.com/vatesfr/xen-orchestra
+
+WORKDIR /build/xen-orchestra
+
+# Send the issue to me in case of issue
+RUN sed -i "s|<a href='https://github.com/vatesfr/xen-orchestra/issues/new/choose'>|<a href='https://github.com/soubinan/xen-orchestainer/issues/new/choose'>|" packages/xo-web/src/xo-app/about/index.js
+
+RUN yarn global add sass-migrator -D && \
+    yarn && \
+    sass-migrator division **/*.scss && \
+    yarn build
+
+
+FROM node:lts-slim
+
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y build-essential python3-minimal libvhdi-utils lvm2 nfs-common cifs-utils ntfs-3g netbase \
+    qemu-utils python3-vmdkstream git libxml2-utils libfuse2 nbdkit libcap2-bin curl libpng-dev gnupg \
+    software-properties-common dmidecode apt-transport-https ca-certificates tzdata
+
+RUN apt-get autoclean
+
+COPY --from=build /build/xen-orchestra /app
+
+# Set plugins links
+RUN find /app/packages/ -maxdepth 1 -mindepth 1 -name "xo-server-*" -not -name "xo-server-test" -exec ln -s {} /app/packages/xo-server/node_modules \;
+
+ARG VERSION=latest \
+    NODE=latest \
+    XOSERVER=latest \
+    XOWEB=latest
+
+ENV TZ="UTC"
+
+LABEL version=$VERSION xo-server=$XOSERVER xo-web=$XOWEB node=$NODE
+
+# Copy configurations
+COPY ./config.toml /etc/xo-server/
+
+# Send the logs to stdout
+RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log
+RUN ln -sf /proc/1/fd/1 /var/log/syslog.log
+
+# Runtime
+EXPOSE 8080
+
+WORKDIR /app/packages/xo-server
+
+CMD ["yarn", "start"]
