@@ -27,7 +27,11 @@ WORKDIR /app
 # Send the issue to me in case of issue
 RUN sed -i "s|<a href='https://github.com/vatesfr/xen-orchestra/issues/new/choose'>|<a href='https://github.com/soubinan/xen-orchestainer/issues/new/choose'>|" packages/xo-web/src/xo-app/about/index.js
 
-RUN yarn install --non-interactive && \
+RUN yarn cache clean && \
+    yarn config delete proxy && \
+    yarn config delete https-proxy && \
+    yarn config delete registry
+RUN yarn install --non-interactive --network-timeout 1000000 && \
     npx sass-migrator division **/*.scss && \
     yarn build
 
