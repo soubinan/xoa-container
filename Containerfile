@@ -65,9 +65,9 @@ LABEL base-image=$VERSION \
 # Send the logs to stdout
 RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log && \
     ln -sf /proc/1/fd/1 /var/log/syslog.log
-# Set TZ
-RUN &&  ln -fs /usr/share/zoneinfo/${UTC} /etc/localtime \
-    &&  dpkg-reconfigure --frontend noninteractive tzdata
+
+RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata
 
 WORKDIR /app/packages/xo-server
 VOLUME [ "/etc/xo-server", "/var/lib/xo-server", "/var/lib/xoa-backup" ]
