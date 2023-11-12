@@ -27,8 +27,7 @@ WORKDIR /app
 # Send the issue to me in case of issue
 RUN sed -i "s|<a href='https://github.com/vatesfr/xen-orchestra/issues/new/choose'>|<a href='https://github.com/soubinan/xen-orchestainer/issues/new/choose'>|" packages/xo-web/src/xo-app/about/index.js
 
-RUN yarn config set registry https://registry.npmjs.cf && \
-    yarn install --non-interactive && \
+RUN yarn install --non-interactive && \
     npx sass-migrator division **/*.scss && \
     yarn build
 
@@ -50,17 +49,13 @@ RUN find /app/packages/ -maxdepth 1 -mindepth 1 -name "xo-server-*" -not -name "
 RUN mkdir -p /etc/xo-server &&\
     cp /app/packages/xo-server/config.toml /etc/xo-server/config.toml
 
-ARG VERSION=latest \
-    NODE=latest \
-    XOWEB=latest \
+ARG XOWEB=latest \
     XOSERVER=latest
 
 ENV TZ=UTC
 
-LABEL base-image=$VERSION \
-    xo-server=$XOSERVER \
-    xo-web=$XOWEB \
-    node=$NODE
+LABEL xo-server=$XOSERVER \
+    xo-web=$XOWEB
 
 # Send the logs to stdout
 RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log && \
