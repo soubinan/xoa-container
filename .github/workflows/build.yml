@@ -50,7 +50,7 @@ jobs:
       - name: Build and export to Docker
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:coreos"
+          context: "."
           file: "./Containerfile"
           load: true
           tags: ${{ env.TEST_TAG }}
