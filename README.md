@@ -8,13 +8,10 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 
 ### Available volumes
 
-* /etc/xo-server: Where the xo-server config lives
+* /etc/localtime: Where to sync the container localtime (aligned with the host by default)
+* /etc/xo-server: Where the xo-server config lives (contains default configs, needs at least the redis IP:Port info)
 * /var/lib/xo-server: Where the xo-server data lives
 * /var/lib/xoa-backup: Where the xo-backup data lives
-
-### Available Environments variables
-
-* TZ: Time zone (default: UTC)
 
 ### Execute
 

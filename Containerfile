@@ -14,7 +14,7 @@ FROM node:lts-slim as run_base
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y libpng-dev python3-minimal libvhdi-utils lvm2 cifs-utils nfs-common ntfs-3g tzdata && \
+    apt-get install -y libpng-dev python3-minimal libvhdi-utils lvm2 cifs-utils nfs-common ntfs-3g && \
     apt-get clean
 
 # Build stage
@@ -51,8 +51,6 @@ RUN mkdir -p /etc/xo-server &&\
 ARG XOWEB=latest \
     XOSERVER=latest
 
-ENV TZ=UTC
-
 LABEL xo-server=$XOSERVER \
     xo-web=$XOWEB
 
@@ -60,11 +58,8 @@ LABEL xo-server=$XOSERVER \
 RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log && \
     ln -sf /proc/1/fd/1 /var/log/syslog.log
 
-RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
-    dpkg-reconfigure --frontend noninteractive tzdata
-
 WORKDIR /app/packages/xo-server
-VOLUME [ "/etc/xo-server", "/var/lib/xo-server", "/var/lib/xoa-backup" ]
+VOLUME [ "/etc/localtime", "/etc/xo-server", "/var/lib/xo-server", "/var/lib/xoa-backup" ]
 
 EXPOSE 80
 
