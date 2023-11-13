@@ -48,11 +48,11 @@ jobs:
             --label "org.opencontainers.image.url=${{ env.PROJECT_URL }}"
             --label "org.opencontainers.image.description=XEN Orchestra As a Container\nBased on XO-Server v${{ env.XO_SERVER }} and XO-Web v${{ env.XO_WEB }}"
             --label "org.opencontainers.image.title=XOA-Container"
-      - name: Install cosign
-        if: github.event_name == 'release'
-        uses: sigstore/cosign-installer@v3
-        with:
-          cosign-release: 'v2.1.1'
+      # - name: Install cosign
+      #   if: github.event_name == 'release'
+      #   uses: sigstore/cosign-installer@v3
+      #   with:
+      #     cosign-release: 'v2.1.1'
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and export to Docker
@@ -83,9 +83,9 @@ jobs:
             XOSERVER=${{ env.XO_SERVER }}
           push: true
         if: github.event_name == 'release'
-      - name: Sign the published container image
-        if: github.event_name == 'release'
-        env:
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+      # - name: Sign the published container image
+      #   if: github.event_name == 'release'
+      #   env:
+      #     TAGS: ${{ steps.meta.outputs.tags }}
+      #     DIGEST: ${{ steps.build-and-push.outputs.digest }}
+      #   run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
