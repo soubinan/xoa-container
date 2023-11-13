@@ -1,0 +1,55 @@
+version: '3'
+services:
+  xenorchestra:
+    restart: unless-stopped
+    image: ghcr.io/soubinan/xoa-container:latest
+    ports:
+      - 8080:80
+    depends_on:
+      - redis
+    environment:
+      - TZ=UTC
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ./config.toml:/etc/xo-server/config.toml:Z
+      - xo-data:/var/lib/xo-server
+      - xo-backup:/var/lib/xoa-backup
+    logging: &default_logging
+      driver: "json-file"
+      options:
+        max-size: "1M"
+        max-file: "10"
+    networks:
+      - frontnet
+      - redisnet
+
+  redis:
+    restart: unless-stopped
+    image: docker.io/library/redis
+    command: redis-server --appendonly yes
+    expose:
+      - 6379
+    volumes:
+      - xo-redis:/data
+    logging:
+      <<: *default_logging
+    networks:
+      - redisnet
+
+volumes:
+  xo-data:
+    driver: local
+  xo-backup:
+    driver: local
+  xo-redis:
+    driver: local
+
+networks:
+  frontnet:
+    external: true
+  redisnet:
+    external: true

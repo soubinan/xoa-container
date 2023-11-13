@@ -47,9 +47,7 @@ COPY --from=build_xoa /app /app
 # Set plugins links
 RUN find /app/packages/ -maxdepth 1 -mindepth 1 -name "xo-server-*" -not -name "xo-server-test" -exec ln -s {} /app/packages/xo-server/node_modules \;
 RUN mkdir -p /etc/xo-server &&\
-    cp /app/packages/xo-server/config.toml /etc/xo-server/config.toml && \
-    sed -i "s|port = 80|port = 8080|" /etc/xo-server/config.toml
-
+    cp /app/packages/xo-server/sample.config.toml /etc/xo-server/config.toml
 ARG XOWEB=latest \
     XOSERVER=latest
 
@@ -68,6 +66,6 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
 WORKDIR /app/packages/xo-server
 VOLUME [ "/etc/xo-server", "/var/lib/xo-server", "/var/lib/xoa-backup" ]
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["node", "dist/cli.mjs"]

@@ -12,14 +12,21 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 * /var/lib/xo-server: Where the xo-server data lives
 * /var/lib/xoa-backup: Where the xo-backup data lives
 
-### Available Environments varibles
+### Available Environments variables
 
 * TZ: Time zone (default: UTC)
 
 ### Execute
 
 ```bash
-docker run --rm -p 8080:8080 -e TZ=UTC -v <path/to/your/config>:/etc/xo-server -v <path/to/your/data>:/var/lib/xo-server -v <path/to/your/data>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
+docker run --rm -p 8080:80 -e TZ=UTC -v <path/to/your/config>:/etc/xo-server -v <path/to/your/data>:/var/lib/xo-server -v <path/to/your/data>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
+```
+
+or
+
+```bash
+docker network create frontnet redisnet
+docker-compose up
 ```
 
 ## Known issues
