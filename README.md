@@ -16,6 +16,12 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 
 * TZ: Time zone (default: UTC)
 
+### Execute
+
+```bash
+docker run --rm -p 8080:8080 -e TZ=UTC -v <path/to/your/config>:/etc/xo-server -v <path/to/your/data>:/var/lib/xo-server -v <path/to/your/data>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
+```
+
 ## Known issues
 
 ### Memory overcommit disabled
