@@ -4,7 +4,7 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 
 > Please use this repo's issues for all bugs observed or supports needed related to the created container images
 
-## Usage
+## Usage (Tested with Docker and Podman)
 
 ### Available volumes
 
@@ -12,6 +12,12 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 * /etc/xo-server: Where the xo-server config lives (contains default configs, needs at least the redis IP:Port info)
 * /var/lib/xo-server: Where the xo-server data lives
 * /var/lib/xoa-backup: Where the xo-backup data lives
+
+### Get the image
+
+```bash
+docker pull ghcr.io/soubinan/xoa-container:latest
+```
 
 ### Execute
 
