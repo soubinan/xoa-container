@@ -1,5 +1,5 @@
 # Build base
-FROM node:18 as build_base
+FROM node:lts as build_base
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
@@ -10,7 +10,7 @@ RUN apt-get update -y && \
 
 
 # Run base
-FROM node:18-slim as run_base
+FROM node:lts-slim as run_base
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
