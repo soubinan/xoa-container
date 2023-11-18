@@ -8,7 +8,6 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 
 ### Available volumes
 
-* /etc/localtime: Where to sync the container localtime (aligned with the host by default)
 * /etc/xo-server: Where the xo-server config lives (contains default configs, needs at least the redis IP:Port info)
 * /var/lib/xo-server: Where the xo-server data lives
 * /var/lib/xoa-backup: Where the xo-backup data lives
@@ -22,13 +21,14 @@ docker pull ghcr.io/soubinan/xoa-container:latest
 ### Execute
 
 ```bash
-docker run --rm -p 8080:80 -e TZ=UTC -v <path/to/your/config>:/etc/xo-server -v <path/to/your/data>:/var/lib/xo-server -v <path/to/your/data>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
+docker run --rm -p 8080:80 -e -v <path/to/xo/config>:/etc/xo-server -v <path/to/xo/data>:/var/lib/xo-server -v <path/to/xo/backup>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
 ```
 
 or
 
 ```bash
-docker network create frontnet redisnet
+docker network create frontnet
+docker network create redisnet
 docker-compose up
 ```
 

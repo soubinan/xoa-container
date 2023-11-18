@@ -7,15 +7,13 @@ services:
       - 8080:80
     depends_on:
       - redis
-    environment:
-      - TZ=UTC
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
     security_opt:
       - apparmor:unconfined
     volumes:
-      - ./config.toml:/etc/xo-server/config.toml:Z
+      - ./example.config.toml:/etc/xo-server/config.toml:Z
       - xo-data:/var/lib/xo-server
       - xo-backup:/var/lib/xoa-backup
     logging: &default_logging
@@ -29,7 +27,7 @@ services:
 
   redis:
     restart: unless-stopped
-    image: docker.io/library/redis
+    image: docker.io/library/redis:latest
     command: redis-server --appendonly yes
     expose:
       - 6379
