@@ -6,12 +6,6 @@ Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](http
 
 ## Usage (Tested with Docker and Podman)
 
-### Available volumes
-
-* /etc/xo-server: Where the xo-server config lives (contains default configs, needs at least the redis IP:Port info)
-* /var/lib/xo-server: Where the xo-server data lives
-* /var/lib/xoa-backup: Where the xo-backup data lives
-
 ### Get the image
 
 ```bash
