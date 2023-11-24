@@ -9,7 +9,9 @@ services:
       - redis
     cap_add:
       - SYS_ADMIN
+      - SYS_RESOURCE
       - DAC_READ_SEARCH
+      - IPC_LOCK
     security_opt:
       - apparmor:unconfined
     volumes:

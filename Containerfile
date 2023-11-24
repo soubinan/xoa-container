@@ -59,7 +59,6 @@ RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log && \
     ln -sf /proc/1/fd/1 /var/log/syslog.log
 
 WORKDIR /app/packages/xo-server
-VOLUME [ "/etc/xo-server", "/var/lib/xo-server", "/var/lib/xoa-backup" ]
 
 EXPOSE 80
 
