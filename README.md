@@ -15,15 +15,17 @@ docker pull ghcr.io/soubinan/xoa-container:latest
 ### Execute
 
 ```bash
-docker run --rm -p 8080:80 -e -v <path/to/xo/config>:/etc/xo-server -v <path/to/xo/data>:/var/lib/xo-server -v <path/to/xo/backup>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
+# You already have Redis running
+docker run --rm -p 8080:80 -v <path/to/xo/config>:/etc/xo-server -v <path/to/xo/data>:/var/lib/xo-server -v <path/to/xo/backup>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
 ```
 
 or
 
 ```bash
+# Use the Compose file with Redis included
 docker network create frontnet
 docker network create redisnet
-docker-compose up
+docker-compose up [-d]
 ```
 
 ## Known issues

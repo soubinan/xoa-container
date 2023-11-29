@@ -1,11 +1,8 @@
 name: XEN Orchestra Container
 
 on:
-  schedule:
-    - cron: "0 10 * * *"
   push:
     branches: ["main"]
-    tags: ["v*.*.*"]
   pull_request:
     branches: ["main"]
   release:
@@ -23,11 +20,11 @@ jobs:
       - name: Get xo-server version
         id: xo-server
         run: |
-          echo "XO_SERVER=$(curl -s https://raw.githubusercontent.com/vatesfr/xen-orchestra/master/packages/xo-server/package.json | jq -r .version)" >> $GITHUB_ENV
+          echo "XO_SERVER="$(curl -s https://raw.githubusercontent.com/vatesfr/xen-orchestra/master/packages/xo-server/package.json | jq -r ".version") >> $GITHUB_ENV
       - name: Get xo-web version
         id: xo-web
         run: |
-          echo "XO_WEB=$(curl -s https://raw.githubusercontent.com/vatesfr/xen-orchestra/master/packages/xo-web/package.json | jq -r .version)" >> $GITHUB_ENV
+          echo "XO_WEB="$(curl -s https://raw.githubusercontent.com/vatesfr/xen-orchestra/master/packages/xo-web/package.json | jq -r ".version") >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v4
       - name: Docker meta
@@ -37,17 +34,16 @@ jobs:
           images: |
             ghcr.io/${{ env.IMAGE_NAME }}
           tags: |
-            type=schedule
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=ref,event=pr
             type=raw,latest
           labels: |
             --label "org.opencontainers.image.source=${{ env.PROJECT_URL }}"
             --label "org.opencontainers.image.url=${{ env.PROJECT_URL }}"
-            --label "org.opencontainers.image.description=XEN Orchestra As a Container\nBased on XO-Server v${{ env.XO_SERVER }} and XO-Web v${{ env.XO_WEB }}"
             --label "org.opencontainers.image.title=XOA-Container"
+            --label "org.opencontainers.image.description=XEN Orchestra As a Container: Build from XO-Server v$XO_SERVER and XO-Web v$XO_WEB"
+            --label "org.opencontainers.image.licenses=CC-BY-NC"
       # - name: Install cosign
       #   if: github.event_name == 'release'
       #   uses: sigstore/cosign-installer@v3
@@ -59,6 +55,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "."
+          platforms: linux/amd64,linux/arm64
           file: "./Containerfile"
           load: true
           tags: ${{ env.TEST_TAG }}
@@ -74,13 +71,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "."
-          # platforms: linux/amd64,linux/arm64
           file: "./Containerfile"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            XOWEB=${{ env.XO_WEB }}
-            XOSERVER=${{ env.XO_SERVER }}
+            XOWEB=$XO_WEB
+            XOSERVER=$XO_SERVER
           push: true
         if: github.event_name == 'release'
       # - name: Sign the published container image

@@ -1,20 +1,20 @@
 # Build base
-FROM node:lts as build_base
+FROM node:18 as build_base
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get install -y build-essential libpng-dev git gettext libvhdi-utils \
         python3-minimal python3-jinja2 python3-vmdkstream lvm2 nfs-common cifs-utils curl ntfs-3g dmidecode \
-        apt-transport-https ca-certificates gnupg && \
+        apt-transport-https ca-certificates gnupg fuse3 && \
     apt-get clean
 
 
 # Run base
-FROM node:lts-slim as run_base
+FROM node:18-slim as run_base
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y libpng-dev python3-minimal libvhdi-utils lvm2 cifs-utils nfs-common ntfs-3g && \
+    apt-get install -y libpng-dev python3-minimal libvhdi-utils lvm2 cifs-utils nfs-common ntfs-3g netbase curl && \
     apt-get clean
 
 # Build stage
@@ -55,8 +55,10 @@ LABEL xo-server=$XOSERVER \
     xo-web=$XOWEB
 
 # Send the logs to stdout
-RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log && \
-    ln -sf /proc/1/fd/1 /var/log/syslog.log
+RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -s --fail http://127.0.0.1:8000 || exit 1
 
 WORKDIR /app/packages/xo-server
 
