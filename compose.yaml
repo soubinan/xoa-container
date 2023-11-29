@@ -4,20 +4,18 @@ services:
     restart: unless-stopped
     image: ghcr.io/soubinan/xoa-container:latest
     ports:
-      - 8080:80
+      - 8088:80
     depends_on:
       - redis
     cap_add:
       - SYS_ADMIN
-      - SYS_RESOURCE
       - DAC_READ_SEARCH
-      - IPC_LOCK
     security_opt:
       - apparmor:unconfined
     volumes:
       - ./example.config.toml:/etc/xo-server/config.toml:Z
-      - xo-data:/var/lib/xo-server
-      - xo-backup:/var/lib/xoa-backup
+      - xo-data:/var/lib/xo-server/data:Z
+      - xo-backup:/var/lib/xoa-backup:Z
     logging: &default_logging
       driver: "json-file"
       options:
@@ -31,10 +29,12 @@ services:
     restart: unless-stopped
     image: docker.io/library/redis:latest
     command: redis-server --appendonly yes
+    ports:
+      - 6379:6379
     expose:
       - 6379
     volumes:
-      - xo-redis:/data
+      - xo-redis:/data:Z
     logging:
       <<: *default_logging
     networks:
