@@ -79,7 +79,7 @@ jobs:
           build-args: |
             XOWEB=$XO_WEB
             XOSERVER=$XO_SERVER
-          push: ${{ github.event_name != 'release' }}
+          push: ${{ github.event_name == 'release' }}
       - name: Sign the published container images
         if: github.event_name == 'release'
         env:
