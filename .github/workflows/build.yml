@@ -44,14 +44,8 @@ jobs:
             org.opencontainers.image.source=${{ env.PROJECT_URL }}
             org.opencontainers.image.url=${{ env.PROJECT_URL }}
             org.opencontainers.image.title=XOA-Container
-            org.opencontainers.image.version={{version}}
-            org.opencontainers.image.description=XEN Orchestra As Container built from sources with XO-Server $XO_SERVER and XO-Web $XO_WEB
             org.opencontainers.image.documentation=${{ env.PROJECT_URL }}
             org.opencontainers.image.authors=${{ env.AUTHOR }}
-            org.opencontainers.image.licenses=CC-BY-NC
-          annotations: |
-            org.opencontainers.image.description=XEN Orchestra As Container built from sources with XO-Server $XO_SERVER and XO-Web $XO_WEB
-            org.opencontainers.image.version={{version}}
             org.opencontainers.image.licenses=CC-BY-NC
       - name: Install cosign
         if: github.event_name == 'release'
