@@ -1,4 +1,4 @@
-name: XEN Orchestra Container
+name: Container Image Build
 
 on:
   push:
@@ -12,16 +12,11 @@ env:
   IMAGE_NAME: soubinan/xoa-container
   TEST_TAG: soubinan/xoa-container:test
   PROJECT_URL: https://github.com/soubinan/xoa-container
+  AUTHOR: https://github.com/soubinan
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          # - linux/arm64
 
     steps:
       - name: Get xo-server version
@@ -46,11 +41,18 @@ jobs:
             type=semver,pattern={{major}}
             type=raw,latest
           labels: |
-            --label "org.opencontainers.image.source=${{ env.PROJECT_URL }}"
-            --label "org.opencontainers.image.url=${{ env.PROJECT_URL }}"
-            --label "org.opencontainers.image.title=XOA-Container"
-            --label "org.opencontainers.image.description=XEN Orchestra As a Container: Build from XO-Server $XO_SERVER and XO-Web $XO_WEB"
-            --label "org.opencontainers.image.licenses=CC-BY-NC"
+            org.opencontainers.image.source=${{ env.PROJECT_URL }}
+            org.opencontainers.image.url=${{ env.PROJECT_URL }}
+            org.opencontainers.image.title=XOA-Container
+            org.opencontainers.image.version={{version}}
+            org.opencontainers.image.description=XEN Orchestra As Container built from sources with XO-Server $XO_SERVER and XO-Web $XO_WEB
+            org.opencontainers.image.documentation=${{ env.PROJECT_URL }}
+            org.opencontainers.image.authors=${{ env.AUTHOR }}
+            org.opencontainers.image.licenses=CC-BY-NC
+          annotations: |
+            org.opencontainers.image.description=XEN Orchestra As Container built from sources with XO-Server $XO_SERVER and XO-Web $XO_WEB
+            org.opencontainers.image.version={{version}}
+            org.opencontainers.image.licenses=CC-BY-NC
       - name: Install cosign
         if: github.event_name == 'release'
         uses: sigstore/cosign-installer@v3
@@ -70,10 +72,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "."
-          platforms: ${{ matrix.platform }}
           file: "./Containerfile"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -83,7 +85,9 @@ jobs:
       - name: Sign the published container images
         if: github.event_name == 'release'
         run: |
-          cosign sign --yes "${TAGS}@${DIGEST}"
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}

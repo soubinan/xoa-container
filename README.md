@@ -1,31 +1,34 @@
 # XEN Orchestra As a Container
 
-Is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](https://github.com/ronivay/xen-orchestra-docker) and [XEN-Orchestra-CE](https://github.com/Ezka77/xen-orchestra-ce)
+XOA in XOA Container means `XEN Orchestra As`, do not confuse with the official Vates's XOA meaning `XEN Orchestra Appliance`. Vates is the open source company behind XCP-NG and XEN Orchestra.
+We are very grateful for their work and strongly encourage you to support them. Even a github star count as a support.
 
-> Please use this repo's issues for all bugs observed or supports needed related to the created container images
+XOA Container - standing for `XEN Orchestra As Container` - is a containerized XEN Orchestra version inspired by [XEN-Orchestra-Docker](https://github.com/ronivay/xen-orchestra-docker) and [XEN-Orchestra-CE](https://github.com/Ezka77/xen-orchestra-ce).
 
-## Usage (Tested with Docker and Podman)
+> Please use this repo's issues for all bugs observed or supports needed related to the xoa-container images.
+
+## Usage (Tested with Docker and Podman, but we prefer podman)
 
 ### Get the image
 
 ```bash
-docker pull ghcr.io/soubinan/xoa-container:latest
+podman pull ghcr.io/soubinan/xoa-container:latest
 ```
 
 ### Execute
 
 ```bash
 # You already have Redis running
-docker run --rm -p 8080:80 -v <path/to/xo/config>:/etc/xo-server -v <path/to/xo/data>:/var/lib/xo-server -v <path/to/xo/backup>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
+podman run [-d] --rm -p 8080:80 -v </local/path/config>:/etc/xo-server -v </local/path/data>:/var/lib/xo-server -v </local/path/backup>:/var/lib/xo-backup ghcr.io/soubinan/xoa-container:latest
 ```
 
 or
 
 ```bash
 # Use the Compose file with Redis included
-docker network create frontnet
-docker network create redisnet
-docker-compose up [-d]
+podman network create frontnet
+podman network create redisnet
+podman-compose up [-d]
 ```
 
 ## Known issues
@@ -53,16 +56,14 @@ sudo sysctl "vm.overcommit_memory=1"
 ```
 
 Note for Docker Desktop/WSL: See <https://stackoverflow.com/a/69294687> for how to apply sysctl config values.
-
 Background: Due to the fact that (for good reasons) the Redis container does not run in privileged mode, there is no way that Redis can enable this for you, i.e., /proc is read-only for containers.
-
 See Redis documentation, corresponding docker issue and kernel documentation for more info.
 
 ## Goals
 
 * Automatic build from sources
 * Add all plugins dynamically
-* Build as a nodejs container
+* Build as an exclusive nodejs container
 * To be OCI compliant (Avoid as much as possible the specific Docker dependencies)
 * Follow the container building good practices: One process per container (Redis is separated from the XEN-server)
 * Keep it as simple as possible
@@ -72,15 +73,14 @@ See Redis documentation, corresponding docker issue and kernel documentation for
 
 ## Non-Goals
 
-* To be built on many image base (It is built using the **Debian image base only**)
+* To be built on many linux distributions (It is built using the **Debian image base only**)
 * To run all the stack as a unique container. If you are interested about this kind of packaging, please check the very good options from [XEN-Orchestra-Docker](https://github.com/ronivay/xen-orchestra-docker) and [XEN-Orchestra-CE](https://github.com/Ezka77/xen-orchestra-ce)
 * To build an image as small as possible (But we try to keep it as optimized as we can)
-* Make it configurable after the initial build
 * Be a replacement or an alternative to the official XEN-Orchestra flavors
 
 ## Todo
 
-* Port it to K8S (Add the expected k8s manifest)
+* Port it to K8S (Add the expected k8s/helm manifest)
 
 ## Test and run tools
 
@@ -89,7 +89,8 @@ See Redis documentation, corresponding docker issue and kernel documentation for
 
 ## XEN-Orchestra
 
-XEN-Container exists thanks to [XEN-Ochestra](https://github.com/vatesfr/xen-orchestra) by [VatesFR](https://github.com/vatesfr) team. Always consider use their supported versions for production purpose
+XEN-Container exists thanks to [XEN-Ochestra](https://github.com/vatesfr/xen-orchestra) by [VatesFR](https://github.com/vatesfr) team.
+Always consider use their supported versions for production purpose.
 
 ### Support
 
