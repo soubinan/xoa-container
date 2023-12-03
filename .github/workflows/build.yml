@@ -76,12 +76,16 @@ jobs:
             XOWEB=$XO_WEB
             XOSERVER=$XO_SERVER
           push: ${{ github.event_name == 'release' }}
+      - name: Store
+        if: github.event_name == 'release'
+        run: |
+          echo ${{ secrets.COSIGN_PRIVATE_KEY }} > cosign.key
       - name: Sign the published container images
         if: github.event_name == 'release'
         run: |
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
+          cosign sign --yes --key cosign.key "${TAGS}@${DIGEST}"
+          rm cosign.key
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
