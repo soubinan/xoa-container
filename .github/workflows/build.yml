@@ -1,4 +1,4 @@
-name: Container Image Build
+name: Container Image Build and Sign
 
 on:
   push:
@@ -49,9 +49,9 @@ jobs:
             org.opencontainers.image.licenses=CC-BY-NC
       - name: Install cosign
         if: github.event_name == 'release'
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@v3.2.0
         with:
-          cosign-release: 'v2.1.1'
+          cosign-release: main
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Registry
@@ -76,16 +76,13 @@ jobs:
             XOWEB=$XO_WEB
             XOSERVER=$XO_SERVER
           push: ${{ github.event_name == 'release' }}
-      - name: Store
-        if: github.event_name == 'release'
-        run: |
-          echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
       - name: Sign the published container images
         if: github.event_name == 'release'
         run: |
-          cosign sign --yes --key cosign.key "${TAGS}@${DIGEST}"
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
           rm cosign.key
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
