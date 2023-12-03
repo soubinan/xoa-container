@@ -59,7 +59,7 @@ LABEL xo-server=$XOSERVER \
 RUN ln -sf /proc/1/fd/1 /var/log/xo-server.log
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD curl -s --fail http://127.0.0.1:8000 || exit 1
+    CMD curl -s --fail http://127.0.0.1:80 || exit 1
 
 WORKDIR /app/packages/xo-server
 
