@@ -79,7 +79,7 @@ jobs:
       - name: Store
         if: github.event_name == 'release'
         run: |
-          echo ${{ secrets.COSIGN_PRIVATE_KEY }} > cosign.key
+          echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
       - name: Sign the published container images
         if: github.event_name == 'release'
         run: |
