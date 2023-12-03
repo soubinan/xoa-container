@@ -48,6 +48,7 @@ COPY --from=build_xoa /app /app
 RUN find /app/packages/ -maxdepth 1 -mindepth 1 -name "xo-server-*" -not -name "xo-server-test" -exec ln -s {} /app/packages/xo-server/node_modules \;
 RUN mkdir -p /etc/xo-server &&\
     cp /app/packages/xo-server/sample.config.toml /etc/xo-server/config.toml
+
 ARG XOWEB=latest \
     XOSERVER=latest
 
