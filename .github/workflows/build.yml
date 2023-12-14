@@ -19,13 +19,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get xo-server version
-        id: xo-server
+      - name: Get xo versions
         run: |
           echo "XO_SERVER="$(curl -s https://raw.githubusercontent.com/vatesfr/xen-orchestra/master/packages/xo-server/package.json | jq -r ".version") >> $GITHUB_ENV
-      - name: Get xo-web version
-        id: xo-web
-        run: |
           echo "XO_WEB="$(curl -s https://raw.githubusercontent.com/vatesfr/xen-orchestra/master/packages/xo-web/package.json | jq -r ".version") >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -69,7 +65,6 @@ jobs:
           file: "./Containerfile"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
